@@ -12,5 +12,6 @@ while True:
 		answer = input()
 		print( get_answer(answer) )
 		if answer.lower() == 'пока!':
-		sys.exit('До встречи!')
-	except Exception as e:
+			sys.exit('До встречи!')
+	except KeyboardInterrupt:
+		sys.exit('\nЗря ты так...')

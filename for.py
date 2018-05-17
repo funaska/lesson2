@@ -3,7 +3,7 @@
 # Посчитать и вывести средний балл по всей школе.
 # Посчитать и вывести средний балл по каждому классу.
 
-def avg_grade(grades_dict,is_whole=0):
+def avg_grade(grades_dict,is_whole=False):
 	all_grade = 0
 	all_length = 0
 	for cur_class in grades_dict:
@@ -24,4 +24,4 @@ grades_dict = [{'school_class': '4a', 'scores': [3,4,4,5,2]},
 ]
 
 avg_grade(grades_dict)
-avg_grade(grades_dict,1)
+avg_grade(grades_dict,True)

@@ -1,11 +1,14 @@
 # Импортируем нужные компоненты
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import ephem
+import logging
+import datetime
 
 # Настройки прокси
 # PROXY = {'proxy_url': 'socks5://t1.learn.python.ru:1080', 'urllib3_proxy_kwargs': {'username': 'learn', 'password': 'python'}}
+# PROXY = {'proxy_url': 'socks5://95.215.54.206:39880'}
+PROXY = {'proxy_url': 'socks5://u0k12.tgproxy.me:1080', 'urllib3_proxy_kwargs': {'username': 'telegram', 'password': 'telegram'}}
 
-import logging
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
 					level=logging.INFO,
 					filename='logs/bot.log'
@@ -13,14 +16,19 @@ logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
 
 def greet_user(bot, update):
 	text = 'Привет!'
-	print(text)
+	print(text,'пользователю')
 	update.message.reply_text(text)
 	# print('Привет!')
 
-def planet_to_const(bot, update, kwargs):
-	print('Пользователь написал: ' + kwargs)
-	update.message.reply_text('Планета' + kwargs)
-	# ephem.constellation()
+def planet_to_const(bot, update):
+	planet = update.message.text.split()[1]
+	print('Пользователь хочет узнать про планету: ' + planet)
+	if planet.lower() == 'mars':
+		update.message.reply_text('Вы хотите узнать про созвездие планеты ' + planet)
+		constellation = ephem.constellation(ephem.Mars(datetime.datetime.now()))
+		update.message.reply_text(constellation[1])
+	else:
+		update.message.reply_text('Не знаю такой планеты (')
 
 def talk_to_me(bot, update):
 	user_text = update.message.text
@@ -29,12 +37,12 @@ def talk_to_me(bot, update):
 
 # Функция, которая соединяется с платформой Telegram, "тело" нашего бота
 def main():
-	# mybot = Updater("587083051:AAEjr2LTJc224qZjRyuFTED059vnYHJ0Qt8", request_kwargs=PROXY)
-	mybot = Updater("587083051:AAEjr2LTJc224qZjRyuFTED059vnYHJ0Qt8")
+	mybot = Updater("587083051:AAEjr2LTJc224qZjRyuFTED059vnYHJ0Qt8", request_kwargs=PROXY)
+	# mybot = Updater("587083051:AAEjr2LTJc224qZjRyuFTED059vnYHJ0Qt8")
 
 	dp = mybot.dispatcher
 	dp.add_handler(CommandHandler("start", greet_user))
-	dp.add_handler(CommandHandler("planet", planet_to_const, pass_args=True))
+	dp.add_handler(CommandHandler("planet", planet_to_const))
 	dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 	mybot.start_polling()
 	mybot.idle()
